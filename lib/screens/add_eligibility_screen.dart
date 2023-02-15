@@ -66,7 +66,7 @@ class _AddEligibilityState extends State<AddEligibility> {
   void getUpdatedValueAndSubmitForm(Map<String, dynamic> values) {
     values['Family Income'] = familyIncome.text;
     values['Gender'] = gender.text;
-    values['caste'] = caste.text;
+    values['caste'] = caste.text.split(', ');
     List list = [];
     for (var i = 0; i < academicCount; i++) {
       list.add({
@@ -80,7 +80,7 @@ class _AddEligibilityState extends State<AddEligibility> {
     values['academicDetails'] = list;
 
     eligibility = Eligibility(
-        caste: values['Caste'],
+        caste: values['caste'],
         familyIncome: values['Family Income'],
         gender: values['Gender'],
         academicDetails: values['academicDetails'],
@@ -97,6 +97,7 @@ class _AddEligibilityState extends State<AddEligibility> {
 
   List a = [];
   List<String> courseLevelNameList = [];
+  String abc = '';
 
   @override
   void initState() {
@@ -106,12 +107,16 @@ class _AddEligibilityState extends State<AddEligibility> {
       spocData = widget.spocdata;
       switchValue = spocData['addtnlInfoReq'];
       data = widget.data;
+      abc = data["caste"].toString();
+      print(abc);
       gender.text = data['gender'] ?? "NA";
+      caste.text = abc.replaceAll('[', '').replaceAll(']', '');
       familyIncome.text = data['familyIncome'] ?? 'Not Mandatory';
-      caste.text = data['caste'] ?? "";
+
       a = data['acadDtls'];
       academicCount = a.length;
     } else {
+      caste.text = '';
       gender.text = "";
       familyIncome.text = "";
     }
@@ -282,18 +287,22 @@ class _AddEligibilityState extends State<AddEligibility> {
                             backgroundColor: Colors.transparent,
                             builder: (BuildContext bc) {
                               return Bottomsheet(
+                                widgetName: 'caste',
                                 onchanged: ((value) {
-                                  caste.text = value;
+                                  caste.text = value
+                                      .toString()
+                                      .replaceAll('[', '')
+                                      .replaceAll(']', '');
                                   setState(() {});
                                 }),
                                 values: const ['General', 'OBC', 'SC', 'ST'],
-                                selectedvalue: familyIncome.text,
+                                selectedvalue: caste.text,
                               );
                             });
                       },
                       child: AbsorbPointer(
                           child: TextFormField(
-                        controller: familyIncome,
+                        controller: caste,
                         decoration: InputDecoration(
                           suffixIcon: const Padding(
                             padding: EdgeInsets.all(8.0),
@@ -1075,9 +1084,11 @@ class _EligibilityDetails {
 class Bottomsheet extends StatefulWidget {
   final List<String> values;
   final selectedvalue;
+  final widgetName;
   final Function(dynamic) onchanged;
   Bottomsheet(
       {Key? key,
+      this.widgetName,
       required this.values,
       this.selectedvalue,
       required this.onchanged})
@@ -1090,15 +1101,20 @@ class Bottomsheet extends StatefulWidget {
 class _BottomsheetState extends State<Bottomsheet> {
   @override
   void initState() {
-    value = widget.selectedvalue;
+    if (widget.widgetName == 'caste' && widget.selectedvalue != '') {
+      casteOptions = widget.selectedvalue.toString().split(', ');
+      values = widget.values;
+    } else {
+      value = widget.selectedvalue;
 
-    values = widget.values;
-
+      values = widget.values;
+    }
     super.initState();
   }
 
   String value = "";
   List<String> values = [];
+  List<String> casteOptions = [];
   @override
   Widget build(BuildContext context) {
     List<Widget> sizelist() {
@@ -1106,57 +1122,112 @@ class _BottomsheetState extends State<Bottomsheet> {
       for (var i = 0; i < (values.length); i++) {
         products.add(GestureDetector(
           onTap: () {
-            value = values[i];
+            if (widget.widgetName == 'caste') {
+              if (casteOptions.contains(values[i])) {
+                casteOptions.remove(values[i]);
+              } else {
+                casteOptions.add(values[i]);
+              }
+              setState(() {});
+            } else {
+              value = values[i];
 
-            widget.onchanged(value);
+              widget.onchanged(value);
 
-            setState(() {});
-            Navigator.pop(context);
+              setState(() {});
+              Navigator.pop(context);
+            }
           },
-          child: Container(
-            height: 45,
-            decoration: BoxDecoration(
-                border:
-                    Border(bottom: BorderSide(color: Colors.grey.shade300))),
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      height: 25,
-                      width: 25,
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 1, color: Colors.black)),
-                      child: value == ""
-                          ? Container()
-                          : value == values[i]
-                              ? Container(
-                                  height: 10,
-                                  width: 10,
-                                  decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: secondaryColor),
-                                )
-                              : Container(),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    TextWidget(
-                      text: values[i],
-                      color: Colors.black,
-                      size: 15,
-                    )
-                  ],
+          child: widget.widgetName == 'caste'
+              ? Container(
+                  height: 45,
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade300))),
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 25,
+                            width: 25,
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(width: 1, color: Colors.black)),
+                            child: widget.widgetName == 'caste' &&
+                                    casteOptions.contains(values[i])
+                                ? Container(
+                                    height: 10,
+                                    width: 10,
+                                    decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: secondaryColor),
+                                  )
+                                : Container(),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          TextWidget(
+                            text: values[i],
+                            color: Colors.black,
+                            size: 15,
+                          )
+                        ],
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                )
+              : Container(
+                  height: 45,
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade300))),
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 25,
+                            width: 25,
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(width: 1, color: Colors.black)),
+                            child: value == ""
+                                ? Container()
+                                : value == values[i]
+                                    ? Container(
+                                        height: 10,
+                                        width: 10,
+                                        decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: secondaryColor),
+                                      )
+                                    : Container(),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          TextWidget(
+                            text: values[i],
+                            color: Colors.black,
+                            size: 15,
+                          )
+                        ],
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
                 ),
-                const Spacer(),
-              ],
-            ),
-          ),
         ));
       }
       return products;
@@ -1192,9 +1263,26 @@ class _BottomsheetState extends State<Bottomsheet> {
                     weight: FontWeight.bold,
                   ),
                 ),
-                Container(
-                  width: 30,
-                )
+                widget.widgetName == 'caste'
+                    ? InkWell(
+                        onTap: () {
+                          widget.onchanged(casteOptions);
+                          setState(() {});
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: 50,
+                          child: const TextWidget(
+                            text: 'Done',
+                            color: whiteColor,
+                            size: 15,
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        width: 30,
+                      )
               ],
             ),
           ),

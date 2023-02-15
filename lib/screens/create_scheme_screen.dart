@@ -203,14 +203,17 @@ class _CreateSchemeState extends State<CreateSchemeScreen> {
       "endDate": dateformatter(End_date),
       "eligibility": {
         "acadDtls": details.academicDetails,
-        "gender": details.gender,
-        "familyIncome": details.familyIncome
+        "gender": details.gender == 'Not Mandatory' ? null : details.gender,
+        "familyIncome":
+            details.familyIncome == 'NA' ? null : details.familyIncome,
+        "caste": details.caste
       },
       "addtnlInfoReq": details.addtnlInfoReq,
       "spocName": details.spocName,
       "spocEmail": details.spocEmail,
       "helpdeskNo": details.helpdeskNo
     };
+    print(jsonEncode(req));
     if (widget.routeFrom == "home") {
       ApiServices().createScheme(req).then((values) {
         if (values['status'] == "SUCCESS") {
@@ -286,7 +289,7 @@ class _CreateSchemeState extends State<CreateSchemeScreen> {
   }
 
   navigation() {
-    Navigator?.of(context).pushReplacement(
+    Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const Tabbar()));
   }
 

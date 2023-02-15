@@ -141,7 +141,7 @@ class Eligibility {
   String? cityOrBlockOrTaluka;
   String? nationality;
   String? religon;
-  String? caste;
+  List<String>? caste;
   String? courseLevelID;
   String? courseLevelName;
   String? courseName;
