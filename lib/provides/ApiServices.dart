@@ -46,7 +46,7 @@ class ApiServices {
     try {
       Map<String, String> userheader = {
         "Content-Type": "application/json",
-        "Authorization": authroziation
+        "Authorization": "Bearer ${Global.token}"
       };
       var resp = await http.get(Uri.parse(Api.listAllProviderScheme),
           headers: userheader);
@@ -67,7 +67,7 @@ class ApiServices {
     try {
       Map<String, String> userheader = {
         "Content-Type": "application/json",
-        "Authorization": authroziation
+        "Authorization": "Bearer ${Global.token}"
       };
       var resp = await http.get(Uri.parse(Api.appliedSchemesList),
           headers: userheader);
@@ -111,8 +111,8 @@ class ApiServices {
   }
 
   // based on application BPP user can accept the application
-  Future acceptApplication(data, appId) {
-    String url = Api.acceptAppliedSchemesList + appId;
+  Future awardApplication(data, appId) {
+    String url = Api.awardAppliedSchemesList + appId;
     return postData(Uri.parse(url), data);
   }
 
@@ -138,8 +138,9 @@ class ApiServices {
   static Future<dynamic> postData(url, body) async {
     Map<String, String> userheader = {
       "Content-Type": "application/json",
-      "Authorization": authroziation
+      "Authorization": "Bearer ${Global.token}"
     };
+
     try {
       var resp =
           await http.post(url, body: json.encode(body), headers: userheader);
