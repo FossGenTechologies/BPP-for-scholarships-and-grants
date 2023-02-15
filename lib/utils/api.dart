@@ -14,7 +14,7 @@ class Api {
   static const String unpublish = _bppUrl + "/api/scheme/unpublish/";
   static const String delete = _bppUrl + "/api/scheme/delete/";
   static const String appliedSchemesList = _bppUrl + '/api/app/list';
-  static const String acceptAppliedSchemesList = _bppUrl + '/api/app/accept/';
+  static const String awardAppliedSchemesList = _bppUrl + '/api/app/award/';
   static const String rejectAppliedSchemesList = _bppUrl + '/api/app/reject/';
   static const String updateScheme = _bppUrl + '/api/scheme/update/';
 }

@@ -34,7 +34,6 @@ class _AppliedScreensState extends State<AppliedScreens> {
     ApiServices().getAppliedSchemes().then((value) {
       setState(() {
         _isLoading = false;
-
         response = json.decode(value);
       });
     });
@@ -77,6 +76,7 @@ class _AppliedScreensState extends State<AppliedScreens> {
               context,
               MaterialPageRoute(
                   builder: (context) => AppliedScreenDetails(
+                        applicationStatus: response[i]['appStatus'].toString(),
                         appId: response[i]['appId'],
                         json: response[i]['applcntDtls'],
                         additionalDetails:

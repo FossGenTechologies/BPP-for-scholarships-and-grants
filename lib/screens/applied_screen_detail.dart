@@ -15,8 +15,13 @@ class AppliedScreenDetails extends StatefulWidget {
   final json;
   final additionalDetails;
   final String appId;
+  final String applicationStatus;
   const AppliedScreenDetails(
-      {Key? key, this.json, required this.appId, this.additionalDetails})
+      {Key? key,
+      this.json,
+      this.applicationStatus = '',
+      required this.appId,
+      this.additionalDetails})
       : super(key: key);
 
   @override
@@ -470,85 +475,89 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
                     const SizedBox(
                       height: 20,
                     ),
-                    isLoading
-                        ? Loader()
-                        : Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: (() {
-                                    var data = {
-                                      "remarks": "Application is rejected."
-                                    };
-                                    isLoading = true;
-                                    ApiServices()
-                                        .rejectApplication(data, widget.appId)
-                                        .then((value) {
-                                      if (value['status'] == true) {
-                                        isLoading = false;
-                                        Navigator.pop(context, true);
-                                      } else {
-                                        isLoading = false;
-                                      }
-                                    });
-                                    setState(() {});
-                                  }),
-                                  child: Container(
-                                    height: 50,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: secondaryColor,
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: const TextWidget(
-                                      text: 'Reject',
-                                      color: whiteColor,
+                    widget.applicationStatus == '2'
+                        ? Container()
+                        : isLoading
+                            ? SizedBox(height: 50, child: Loader())
+                            : Row(
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: (() {
+                                        var data = {
+                                          "remarks": "Application is rejected."
+                                        };
+                                        isLoading = true;
+                                        ApiServices()
+                                            .rejectApplication(
+                                                data, widget.appId)
+                                            .then((value) {
+                                          if (value['status'] == true) {
+                                            isLoading = false;
+                                            Navigator.pop(context, true);
+                                          } else {
+                                            isLoading = false;
+                                          }
+                                        });
+                                        setState(() {});
+                                      }),
+                                      child: Container(
+                                        height: 50,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: secondaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 0, 10, 0),
+                                        child: const TextWidget(
+                                          text: 'Reject',
+                                          color: whiteColor,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: (() {
-                                    var data = {
-                                      "remarks": "Application is accepted."
-                                    };
-                                    isLoading = true;
-                                    ApiServices()
-                                        .acceptApplication(data, widget.appId)
-                                        .then((value) {
-                                      if (value['status'] == true) {
-                                        isLoading = false;
-                                        Navigator.pop(context, true);
-                                      } else {
-                                        isLoading = false;
-                                      }
-                                    });
-                                    setState(() {});
-                                  }),
-                                  child: Container(
-                                    height: 50,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: primaryColor,
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: const TextWidget(
-                                      text: 'Accept',
-                                      color: whiteColor,
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: (() {
+                                        var data = {
+                                          "remarks": "Application is awarded."
+                                        };
+                                        isLoading = true;
+                                        ApiServices()
+                                            .awardApplication(
+                                                data, widget.appId)
+                                            .then((value) {
+                                          if (value['status'] == true) {
+                                            isLoading = false;
+                                            Navigator.pop(context, true);
+                                          } else {
+                                            isLoading = false;
+                                          }
+                                        });
+                                        setState(() {});
+                                      }),
+                                      child: Container(
+                                        height: 50,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 0, 10, 0),
+                                        child: const TextWidget(
+                                          text: 'Award',
+                                          color: whiteColor,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
                     const SizedBox(
                       height: 20,
                     ),
