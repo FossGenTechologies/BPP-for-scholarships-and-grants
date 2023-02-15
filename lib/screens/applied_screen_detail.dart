@@ -110,7 +110,7 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
             const SizedBox(
               height: 10,
             ),
-            _title(academicList[i]['name']),
+            _title(academicList[i]['name'] ?? ""),
             const SizedBox(
               height: 10,
             ),
@@ -187,7 +187,7 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
             const SizedBox(
               height: 10,
             ),
-            _title(financialstat[i]['name']),
+            _title(financialstat[i]['name'] ?? ""),
             const SizedBox(
               height: 10,
             ),
@@ -235,7 +235,7 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
                     const SizedBox(
                       height: 20,
                     ),
-                    _title('Application Id'),
+                    _title('Candidate Id'),
                     const SizedBox(
                       height: 10,
                     ),
@@ -292,52 +292,52 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
                     const SizedBox(
                       height: 20,
                     ),
-                    _title('Academic Qualifications'),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Column(
-                      children: academicQualifationsUi(),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    _title('Current Education'),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Column(
-                      children: currentEducationUi(),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    _title('Financial Status'),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Column(
-                      children: financialStatus(),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    _title(address['format']),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 50,
-                      padding: const EdgeInsets.only(left: 10),
-                      alignment: Alignment.centerLeft,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1, color: Colors.black)),
-                      child: TextWidget(
-                        text: address['full'],
-                      ),
-                    ),
+                    // _title('Academic Qualifications'),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // Column(
+                    //   children: academicQualifationsUi(),
+                    // ),
+                    // const SizedBox(
+                    //   height: 20,
+                    // ),
+                    // _title('Current Education'),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // Column(
+                    //   children: currentEducationUi(),
+                    // ),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // _title('Financial Status'),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // Column(
+                    //   children: financialStatus(),
+                    // ),
+                    // const SizedBox(
+                    //   height: 20,
+                    // ),
+                    // _title(address['format'] ?? ""),
+                    // const SizedBox(
+                    //   height: 10,
+                    // ),
+                    // Container(
+                    //   height: 50,
+                    //   padding: const EdgeInsets.only(left: 10),
+                    //   alignment: Alignment.centerLeft,
+                    //   width: MediaQuery.of(context).size.width,
+                    //   decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //       border: Border.all(width: 1, color: Colors.black)),
+                    //   child: TextWidget(
+                    //     text: address['full'],
+                    //   ),
+                    // ),
                     !isFamMemWrkng
                         ? Container()
                         : Column(
