@@ -10,6 +10,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import '../utils/colors_widget.dart';
 import '../widgets/custom_loader.dart';
 import '../widgets/text_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppliedScreenDetails extends StatefulWidget {
   final json;
@@ -31,11 +32,7 @@ class AppliedScreenDetails extends StatefulWidget {
 class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
   var json;
   bool isLoading = false;
-  var address;
-  var academicList;
-  var currentEducationList;
-  var financialstat;
-  var tags;
+
   bool isFamMemWrkng = false;
   var additionalDetail;
 
@@ -45,15 +42,7 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
     // entire data is obtanied here to show prefilled within the boxes
     json = widget.json;
 
-    if (widget.additionalDetails['isFamMemWrkng'] == 'Y') {
-      isFamMemWrkng = true;
-      additionalDetail = widget.additionalDetails;
-    }
-    address = json["contact"]['address'];
-    tags = json['person']?['tags'];
-    academicList = tags[0]["list"];
-    currentEducationList = tags[1]["list"];
-    financialstat = tags[2]['list'];
+    additionalDetail = widget.additionalDetails;
   }
 
   @override
@@ -68,11 +57,19 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
           children: [
             Text(
               value,
-              style: const TextStyle(color: Colors.black, fontSize: 16),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: value == "Additional Details" ? 24 : 16),
             ),
           ],
         ),
       );
+    }
+
+    Future<void> _launchUrl(Uri uri) async {
+      if (!await launchUrl(uri)) {
+        throw Exception('Could not launch $uri');
+      }
     }
 
     String branchName(String txt) {
@@ -100,111 +97,6 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
         default:
           return '';
       }
-    }
-
-    List<Widget> academicQualifationsUi() {
-      List<Widget> ui = [];
-      for (var i = 0; i < academicList.length; i++) {
-        ui.add(Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            _title(academicList[i]['name'] ?? ""),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              height: 50,
-              padding: const EdgeInsets.only(left: 10),
-              alignment: Alignment.centerLeft,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1, color: Colors.black)),
-              child: TextWidget(
-                text: academicList[i]['value'],
-              ),
-            ),
-          ],
-        ));
-      }
-      return ui;
-    }
-
-    List<Widget> currentEducationUi() {
-      List<Widget> ui = [];
-      for (var i = 0; i < currentEducationList.length; i++) {
-        ui.add(Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            _title('Class'),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              height: 50,
-              padding: const EdgeInsets.only(left: 10),
-              alignment: Alignment.centerLeft,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1, color: Colors.black)),
-              child: TextWidget(text: currentEducationList[i]['name']),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            _title("Course"),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              height: 50,
-              padding: const EdgeInsets.only(left: 10),
-              alignment: Alignment.centerLeft,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1, color: Colors.black)),
-              child: TextWidget(
-                text: currentEducationList[i]['value'],
-              ),
-            ),
-          ],
-        ));
-      }
-      return ui;
-    }
-
-    List<Widget> financialStatus() {
-      List<Widget> ui = [];
-      for (var i = 0; i < financialstat.length; i++) {
-        ui.add(Column(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            _title(financialstat[i]['name'] ?? ""),
-            const SizedBox(
-              height: 10,
-            ),
-            Container(
-              height: 50,
-              padding: const EdgeInsets.only(left: 10),
-              alignment: Alignment.centerLeft,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1, color: Colors.black)),
-              child: TextWidget(text: financialstat[i]['value']),
-            ),
-          ],
-        ));
-      }
-      return ui;
     }
 
     Widget _body(double h, double w) {
@@ -235,41 +127,71 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
                     const SizedBox(
                       height: 20,
                     ),
-                    _title('Candidate Id'),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 50,
-                      padding: const EdgeInsets.only(left: 10),
-                      alignment: Alignment.centerLeft,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1, color: Colors.black)),
-                      child: TextWidget(
-                        text: json['person']["id"].toString(),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    _title('Name'),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      height: 50,
-                      padding: const EdgeInsets.only(left: 10),
-                      alignment: Alignment.centerLeft,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 1, color: Colors.black)),
-                      child: TextWidget(
-                        text: json['person']['name'].toString(),
-                      ),
-                    ),
+                    json['person']["id"] == null
+                        ? Container(
+                            height: 0,
+                          )
+                        : _title('Candidate Id'),
+                    json['person']["id"] == null
+                        ? Container(
+                            height: 0,
+                          )
+                        : const SizedBox(
+                            height: 10,
+                          ),
+                    json['person']["id"] == null
+                        ? Container(
+                            height: 0,
+                          )
+                        : Container(
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10),
+                            alignment: Alignment.centerLeft,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border:
+                                    Border.all(width: 1, color: Colors.black)),
+                            child: TextWidget(
+                              text: json['person']["id"].toString(),
+                            ),
+                          ),
+                    json['person']['name'] == null
+                        ? Container(
+                            height: 0,
+                          )
+                        : const SizedBox(
+                            height: 20,
+                          ),
+                    json['person']['name'] == null
+                        ? Container(
+                            height: 0,
+                          )
+                        : _title('Name'),
+                    json['person']['name'] == null
+                        ? Container(
+                            height: 0,
+                          )
+                        : const SizedBox(
+                            height: 10,
+                          ),
+                    json['person']['name'] == null
+                        ? Container(
+                            height: 0,
+                          )
+                        : Container(
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 10),
+                            alignment: Alignment.centerLeft,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border:
+                                    Border.all(width: 1, color: Colors.black)),
+                            child: TextWidget(
+                              text: json['person']['name'].toString(),
+                            ),
+                          ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -292,52 +214,146 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
                     const SizedBox(
                       height: 20,
                     ),
-                    // _title('Academic Qualifications'),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // Column(
-                    //   children: academicQualifationsUi(),
-                    // ),
-                    // const SizedBox(
-                    //   height: 20,
-                    // ),
-                    // _title('Current Education'),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // Column(
-                    //   children: currentEducationUi(),
-                    // ),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // _title('Financial Status'),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // Column(
-                    //   children: financialStatus(),
-                    // ),
-                    // const SizedBox(
-                    //   height: 20,
-                    // ),
-                    // _title(address['format'] ?? ""),
-                    // const SizedBox(
-                    //   height: 10,
-                    // ),
-                    // Container(
-                    //   height: 50,
-                    //   padding: const EdgeInsets.only(left: 10),
-                    //   alignment: Alignment.centerLeft,
-                    //   width: MediaQuery.of(context).size.width,
-                    //   decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(10),
-                    //       border: Border.all(width: 1, color: Colors.black)),
-                    //   child: TextWidget(
-                    //     text: address['full'],
-                    //   ),
-                    // ),
+                    _title('Additional Details'),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    additionalDetail['name'] == null ||
+                            additionalDetail['name'] == ''
+                        ? Container()
+                        : Column(children: [
+                            _title('Name'),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(left: 10),
+                              alignment: Alignment.centerLeft,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      width: 1, color: Colors.black)),
+                              child: TextWidget(
+                                text: additionalDetail['name'],
+                              ),
+                            ),
+                          ]),
+                    additionalDetail['phone'] == null ||
+                            additionalDetail['phone'] == ''
+                        ? Container()
+                        : Column(children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            _title('Phone No'),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(left: 10),
+                              alignment: Alignment.centerLeft,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      width: 1, color: Colors.black)),
+                              child: TextWidget(
+                                text: additionalDetail['phone'],
+                              ),
+                            ),
+                          ]),
+                    additionalDetail['address'] == null ||
+                            additionalDetail['address'] == ''
+                        ? Container()
+                        : Column(children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            _title('Address'),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(left: 10),
+                              alignment: Alignment.centerLeft,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      width: 1, color: Colors.black)),
+                              child: TextWidget(
+                                text: additionalDetail['address'],
+                              ),
+                            ),
+                          ]),
+                    additionalDetail['needOfScholarship'] == null ||
+                            additionalDetail['needOfScholarship'] == ''
+                        ? Container()
+                        : Column(
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _title('Tell us why you need scholarship'),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                height: 50,
+                                padding: const EdgeInsets.only(left: 10),
+                                alignment: Alignment.centerLeft,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        width: 1, color: Colors.black)),
+                                child: TextWidget(
+                                  text: additionalDetail['needOfScholarship'],
+                                ),
+                              ),
+                            ],
+                          ),
+                    additionalDetail['docUrl'] == null ||
+                            additionalDetail['docUrl'] == ''
+                        ? Container()
+                        : Column(
+                            children: [
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _title('Documents URL'),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              InkWell(
+                                onTap: () => _launchUrl(
+                                    Uri.parse(additionalDetail['docUrl'])),
+                                child: AbsorbPointer(
+                                  child: Container(
+                                    height: 50,
+                                    padding: const EdgeInsets.only(left: 10),
+                                    alignment: Alignment.centerLeft,
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            width: 1, color: Colors.black)),
+                                    child: TextWidget(
+                                      text: additionalDetail['docUrl'],
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     !isFamMemWrkng
                         ? Container()
                         : Column(
@@ -475,7 +491,8 @@ class _AppliedScreenDetailsState extends State<AppliedScreenDetails> {
                     const SizedBox(
                       height: 20,
                     ),
-                    widget.applicationStatus == '2'
+                    widget.applicationStatus == '2' ||
+                            widget.applicationStatus == '5'
                         ? Container()
                         : isLoading
                             ? SizedBox(height: 50, child: Loader())

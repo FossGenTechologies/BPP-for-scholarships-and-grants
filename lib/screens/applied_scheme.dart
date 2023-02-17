@@ -127,7 +127,8 @@ class _AppliedScreensState extends State<AppliedScreens> {
                           textAlign: TextAlign.end,
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
-                        Text(" ${response[i]['applcntDtls']['person']['name']}",
+                        Text(
+                            " ${response[i]['applcntDtls']['person']['name'] ?? ""} ",
                             textAlign: TextAlign.end,
                             style: const TextStyle(
                               fontWeight: FontWeight.w500,
