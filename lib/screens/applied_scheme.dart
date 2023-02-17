@@ -146,7 +146,7 @@ class _AppliedScreensState extends State<AppliedScreens> {
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          " ${dateformatter(response[i]['schemeStartDate'])}",
+                          " ${dateformatter(response[i]['appCreatedAt'])}",
                           textAlign: TextAlign.end,
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
